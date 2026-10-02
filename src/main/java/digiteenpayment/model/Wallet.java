@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Wallet extends Payment {
 
     @Column(name = "person_Id", nullable = false, updatable = false, unique = true)
-    private Long personId;
+    private String email;
 
     @Column(name = "naturalCode", nullable = false, unique = true, updatable = false)
     private String naturalCode;

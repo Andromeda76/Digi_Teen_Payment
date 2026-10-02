@@ -17,8 +17,8 @@ import java.util.UUID;
 @Setter
 public class WalletPVM {
 
-    @NotNull
-    private Long personId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String email;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String naturalCode;
@@ -36,8 +36,8 @@ public class WalletPVM {
 
     public static Wallet walletPVMToEntity(WalletPVM walletPVM) {
         Wallet wallet = new Wallet();
+        wallet.setEmail(walletPVM.getEmail());
         wallet.setBalance(walletPVM.getBalance());
-        wallet.setPersonId(walletPVM.getPersonId());
         wallet.setUpdatedAt(walletPVM.getUpdatedAt());
         wallet.setCreatedAt(walletPVM.getCreatedAt());
         wallet.setNaturalCode(UUID.randomUUID().toString());
