@@ -2,12 +2,13 @@ package digiteenpayment.controller;
 
 
 import digiteenpayment.model.Wallet;
+import digiteenpayment.model.pvm.WalletPVM;
 import digiteenpayment.service.WalletService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -18,10 +19,9 @@ public class WalletController {
 
     private final WalletService walletService;
 
-
     @PostMapping("/create")
-    public Wallet create(@RequestBody Wallet wallet) {
-        return walletService.save(wallet);
+    public Wallet create(@Valid @RequestBody WalletPVM walletPVM) {
+        return walletService.save(WalletPVM.walletPVMToEntity(walletPVM));
     }
 
 }
