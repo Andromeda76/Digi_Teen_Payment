@@ -29,7 +29,4 @@ public class Wallet extends Payment {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @Version
-    private int version;
 }

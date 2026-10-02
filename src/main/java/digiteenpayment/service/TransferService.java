@@ -41,18 +41,20 @@ public class TransferService {
         BigDecimal amount = transfer.getAmount();
         Wallet owner = walletService.findById(transfer.getOrigin().getId());
 
+        if (owner.getBalance().compareTo(amount) < 0) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
         if (owner.getId() == walletOwnerId) {
             if (transfer.getTransferType() == TransferType.DEPOSIT) {
                 owner.setBalance(owner.getBalance().add(amount));
 
+            } else if (transfer.getTransferType() == TransferType.WITHDRAW) {
+                owner.setBalance(owner.getBalance().subtract(amount));
+
             }
             else if (transfer.getTransferType() == TransferType.TRANSFER) {
                 Wallet destination = walletService.findById(transfer.getDestination().getId());
-
-                if (owner.getBalance().compareTo(amount) < 0) {
-                    throw new RuntimeException("Insufficient balance");
-                }
-
                 owner.setBalance(owner.getBalance().subtract(amount));
                 destination.setBalance(destination.getBalance().add(amount));
             }

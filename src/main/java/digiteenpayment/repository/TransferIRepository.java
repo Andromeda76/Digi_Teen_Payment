@@ -11,6 +11,6 @@ import java.util.Optional;
 
 public interface TransferIRepository extends JpaRepository<Transfer, Long> {
 
-    @Lock(LockModeType.PESSIMISTIC_FORCE_INCREMENT)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Transfer> findByRequestId(String requestId);
 }
