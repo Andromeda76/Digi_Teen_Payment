@@ -9,8 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +18,7 @@ public class WalletController {
 
     private final WalletService walletService;
     private final PersonService personService;
+
 
     @PostMapping("/create")
     public Wallet create(@Valid @RequestBody WalletPVM walletPVM) {

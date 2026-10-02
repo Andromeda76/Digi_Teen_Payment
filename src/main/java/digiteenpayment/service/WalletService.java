@@ -20,9 +20,16 @@ public class WalletService {
     }
 
 
-    public Wallet findById(Long aLong) {
+    public Wallet findByEmail(String email) {
         return walletRepository
-                .findById(aLong)
+                .findByEmail(email)
+                .orElseThrow(()-> new EntityNotFoundException("Wallet not found"));
+    }
+
+
+    public Wallet findById(Long id) {
+        return walletRepository
+                .findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Wallet not found"));
     }
 

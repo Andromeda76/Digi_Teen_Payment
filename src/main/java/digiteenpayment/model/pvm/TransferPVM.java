@@ -1,5 +1,6 @@
 package digiteenpayment.model.pvm;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import digiteenpayment.model.Transfer;
 import digiteenpayment.model.Wallet;
 import digiteenpayment.model.enumerated.TransferStatus;
@@ -20,8 +21,7 @@ public class TransferPVM {
     @Positive
     private Long walletDestinationId;
 
-    @NotNull
-    @Positive
+    @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
     private Long originWalletId;
 
     @NotNull
@@ -35,9 +35,6 @@ public class TransferPVM {
 
     @NotNull
     private TransferStatus transferStatus;
-
-    @Positive
-    private Long LedgerId;
 
 
     public static Transfer transferPVMToEntity(TransferPVM transferPVM) {

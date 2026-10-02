@@ -31,7 +31,7 @@ public class TransferService {
 
 
     @Transactional(rollbackFor = Throwable.class)
-    public Transfer update(String requestId) {
+    public Transfer update(String requestId, long walletOwnerId) {
         Transfer transfer = findByRequestId(requestId);
 
         if (transfer.getTransferStatus() == TransferStatus.COMPLETED) {
@@ -39,25 +39,28 @@ public class TransferService {
         }
 
         BigDecimal amount = transfer.getAmount();
+        Wallet owner = walletService.findById(transfer.getOrigin().getId());
 
-        if (transfer.getTransferType() == TransferType.DEPOSIT) {
-            Wallet owner = walletService.findById(transfer.getOrigin().getId());
-            owner.setBalance(owner.getBalance().add(amount));
+        if (owner.getId() == walletOwnerId) {
+            if (transfer.getTransferType() == TransferType.DEPOSIT) {
+                owner.setBalance(owner.getBalance().add(amount));
 
-        } else if (transfer.getTransferType() == TransferType.TRANSFER) {
-            
-            Wallet owner = walletService.findById(transfer.getOrigin().getId());
-            Wallet destination = walletService.findById(transfer.getDestination().getId());
+            }
+            else if (transfer.getTransferType() == TransferType.TRANSFER) {
+                Wallet destination = walletService.findById(transfer.getDestination().getId());
 
-            if (owner.getBalance().compareTo(amount) < 0) {
-                throw new RuntimeException("Insufficient balance");
+                if (owner.getBalance().compareTo(amount) < 0) {
+                    throw new RuntimeException("Insufficient balance");
+                }
+
+                owner.setBalance(owner.getBalance().subtract(amount));
+                destination.setBalance(destination.getBalance().add(amount));
             }
 
-            owner.setBalance(owner.getBalance().subtract(amount));
-            destination.setBalance(destination.getBalance().add(amount));
+            transfer.setTransferStatus(TransferStatus.COMPLETED);
+        }else {
+            throw new RuntimeException("Inconsistent data found");
         }
-
-        transfer.setTransferStatus(TransferStatus.COMPLETED);
         return transfer;
     }
 

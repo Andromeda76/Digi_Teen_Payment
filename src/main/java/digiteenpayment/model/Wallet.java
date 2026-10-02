@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 public class Wallet extends Payment {
 
-    @Column(name = "person_Id", nullable = false, updatable = false, unique = true)
+    @Column(name = "email", nullable = false, updatable = false, unique = true)
     private String email;
 
     @Column(name = "naturalCode", nullable = false, unique = true, updatable = false)
