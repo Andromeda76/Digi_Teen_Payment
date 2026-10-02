@@ -41,26 +41,23 @@ public class TransferService {
         BigDecimal amount = transfer.getAmount();
         Wallet owner = walletService.findById(transfer.getOrigin().getId());
 
-        if (owner.getBalance().compareTo(amount) < 0) {
-            throw new RuntimeException("Insufficient balance");
-        }
-
         if (owner.getId() == walletOwnerId) {
             if (transfer.getTransferType() == TransferType.DEPOSIT) {
                 owner.setBalance(owner.getBalance().add(amount));
 
-            } else if (transfer.getTransferType() == TransferType.WITHDRAW) {
+            } else if (transfer.getTransferType() == TransferType.WITHDRAW
+                && checkBalance(owner, amount)) {
                 owner.setBalance(owner.getBalance().subtract(amount));
-
             }
-            else if (transfer.getTransferType() == TransferType.TRANSFER) {
+            else if (transfer.getTransferType() == TransferType.TRANSFER
+                    && checkBalance(owner, amount)) {
                 Wallet destination = walletService.findById(transfer.getDestination().getId());
                 owner.setBalance(owner.getBalance().subtract(amount));
                 destination.setBalance(destination.getBalance().add(amount));
             }
 
             transfer.setTransferStatus(TransferStatus.COMPLETED);
-        }else {
+        } else {
             throw new RuntimeException("Inconsistent data found");
         }
         return transfer;
@@ -74,7 +71,6 @@ public class TransferService {
     }
 
 
-
     public Map<String, Enum[]> getLedgerEnums() {
         Map<String, Enum[]> ledgerEnums = new HashMap<>();
         ledgerEnums.put("LedgerTypes", TransferType.values());
@@ -82,4 +78,10 @@ public class TransferService {
          return ledgerEnums;
     }
 
+    private boolean checkBalance(Wallet owner, BigDecimal amount) {
+        if (owner.getBalance().compareTo(amount) < 0) {
+            throw new RuntimeException("Insufficient balance");
+        }
+        return true;
+    }
 }
